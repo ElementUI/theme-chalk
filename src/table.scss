@@ -127,6 +127,26 @@
     }
   }
 
+  @include m(medium) {
+    th, td {
+      padding: 10px 0;
+    }
+  }
+
+  @include m(small) {
+    font-size: 12px;
+    th, td {
+      padding: 8px 0;
+    }
+  }
+
+  @include m(mini) {
+    font-size: 12px;
+    th, td {
+      padding: 6px 0;
+    }
+  }
+
   tr {
     background-color: $--color-white;
 
@@ -212,6 +232,10 @@
     }
   }
 
+  th:first-child .cell, td:first-child .cell {
+    padding-left: 0;
+  }
+
   // 拥有多级表头
   @include m((group, border)) {
     border: $--table-border;
@@ -249,6 +273,10 @@
 
     th, td {
       border-right: $--table-border;
+
+      &:first-child .cell {
+        padding-left: 10px;
+      }
     }
 
     .has-gutter {
