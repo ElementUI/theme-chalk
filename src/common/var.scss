@@ -259,6 +259,9 @@ $--msgbox-content-color: $--color-text-regular !default;
 $--msgbox-error-font-size: 12px !default;
 $--msgbox-padding-primary: 15px !default;
 
+$--msgbox-close-color: $--color-text-placeholder !default;
+$--msgbox-close-hover-color: $--color-text-secondary !default;
+
 $--msgbox-success-color: $--color-success !default;
 $--msgbox-info-color: $--color-info !default;
 $--msgbox-warning-color: $--color-warning !default;

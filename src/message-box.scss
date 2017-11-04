@@ -60,13 +60,10 @@
     font-size: $--message-close-size;
     cursor: pointer;
 
-    .el-message-box__close {
-      color: $--color-info;
-    }
-
-    &:focus, &:hover {
-      .el-message-box__close {
-        color: $--color-primary;
+    @include e(close) {
+      color: $--msgbox-close-color;
+      &:focus, &:hover {
+        color: $--msgbox-close-hover-color;
       }
     }
 
