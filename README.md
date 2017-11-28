@@ -19,6 +19,12 @@ Or Use webpack
 import 'element-theme-chalk';
 ```
 
+Or Use webpack with Sass/SCSS
+```javascript
+$--font-path: "~element-theme-chalk/src/fonts";
+@import "~element-theme-chalk/src/index.scss";
+```
+
 Or
 ```html
 <link rel="stylesheet" href="path/to/node_modules/element-theme-chalk/lib/index.css">
