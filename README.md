@@ -20,7 +20,7 @@ import 'element-theme-chalk';
 ```
 
 Or Use webpack with Sass/SCSS
-```javascript
+```scss
 $--font-path: "~element-theme-chalk/src/fonts";
 @import "~element-theme-chalk/src/index.scss";
 ```
