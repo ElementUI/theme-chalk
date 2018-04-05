@@ -16,7 +16,7 @@
   border-radius: $--border-radius-base;
 
   @include e(wrap) {
-    max-height: 280px;
+    max-height: $--input-autocomplete-max-height;
     padding: 10px 0;
     box-sizing: border-box;
     overflow: auto;
