@@ -253,7 +253,7 @@
     @include share-rule(border-pseudo) {
       content: '';
       position: absolute;
-      background-color: $--table-border-color;
+      background-color: $--table-border;
       z-index: 1;
     }
 
