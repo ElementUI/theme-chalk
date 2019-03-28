@@ -67,98 +67,112 @@
 
 /* BEM
  -------------------------- */
-@mixin b($block) {
-  $B: $namespace+'-'+$block !global;
 
-  .#{$B} {
+$_BEM: (null, null, null);
+
+@mixin b($block) {
+  $lastBEM: $_BEM;
+  $_BEM: ($block, null, null) !global;
+
+  .#{$namespace}-#{$block} {
     @content;
+  }
+
+  $_BEM: $lastBEM !global;
+}
+
+@mixin e($elements) {
+  $block: nth($_BEM, 1);
+
+  @if null == $block {
+    @error "Base-level rules cannot contain an element mixin";
+  } @else {
+    $selects: &;
+    $old-elems: nth($_BEM, 2);
+
+    @if (null != $old-elems) {
+      $selects: ();
+
+      @each $old-select in & {
+        @each $old-element in $old-elems {
+          $old-bem: ".#{$namespace}-#{$block}#{$element-separator}#{$old-element}";
+          $old-len: length($old-select);
+
+          @if nth($old-select, $old-len) == $old-bem {
+            $selects: append($selects, set-nth($old-select, $old-len, ".#{$namespace}-#{$block}"), "comma", );
+          } @else {
+            $selects: append($selects, $old-select, "comma", );
+          }
+        }
+      }
+    }
+
+    $lastBEM: $_BEM;
+    $_BEM: ($block, $elements, null) !global;
+
+    $parent: ".#{$namespace}-#{$block}";
+    $current: ();
+
+    @each $element in $elements {
+      $current: append(
+        $current,
+        bem-extend($selects, $parent, "#{$parent}#{$element-separator}#{$element}"),
+        "comma",
+      );
+    }
+
+    @at-root {
+      #{$current} {
+        @content;
+      }
+    }
+
+    $_BEM: $lastBEM !global;
   }
 }
 
-@mixin e($element) {
-  $E: $element !global;
-  $selector: &;
-  $currentSelector: "";
-  @each $unit in $element {
-    $currentSelector: #{$currentSelector + "." + $B + $element-separator + $unit + ","};
-  }
+@mixin m($modifiers) {
+  $block: nth($_BEM, 1);
 
-  @if hitAllSpecialNestRule($selector) {
-    @at-root {
-      #{$selector} {
-        #{$currentSelector} {
+  @if null == $block {
+    @error "Base-level rules cannot contain a modifier mixin";
+  } @else if null != nth($_BEM, 3) {
+    @error "Modifier-level rules cannot contain another modifier mixin";
+  } @else {
+    $elements: nth($_BEM, 2);
+
+    @if (null == $elements) {
+      $elements: (null);
+    }
+
+    $lastBEM: $_BEM;
+    $_BEM: ($block, $elements, $modifiers) !global;
+
+    @each $element in $elements {
+      $parent: ".#{$namespace}-#{$block}";
+
+      @if (null != $element) {
+        $parent: "#{$parent}#{$element-separator}#{$element}";
+      }
+
+      $current: ();
+
+      @each $modifier in $modifiers {
+        $current: append(
+          $current,
+          bem-extend(&, $parent, "#{$parent}#{$modifier-separator}#{$modifier}"),
+          "comma",
+        );
+      }
+
+      @at-root {
+        #{$current} {
           @content;
         }
       }
     }
-  } @else {
-    @at-root {
-      #{$currentSelector} {
-        @content;
-      }
-    }
-  }
-}
 
-@mixin m($modifier) {
-  $selector: &;
-  $currentSelector: "";
-  @each $unit in $modifier {
-    $currentSelector: #{$currentSelector + & + $modifier-separator + $unit + ","};
-  }
-
-  @at-root {
-    #{$currentSelector} {
-      @content;
-    }
-  }
-}
-
-@mixin configurable-m($modifier, $E-flag: false) {
-  $selector: &;
-  $interpolation: '';
-
-  @if $E-flag {
-    $interpolation: $element-separator + $E-flag;
-  }
-
-  @at-root {
-    #{$selector} {
-      .#{$B+$interpolation+$modifier-separator+$modifier} {
-        @content;
-      }
-    }
-  }
-}
-
-@mixin spec-selector($specSelector: '', $element: $E, $modifier: false, $block: $B) {
-  $modifierCombo: '';
-
-  @if $modifier {
-    $modifierCombo: $modifier-separator + $modifier;
-  }
-
-  @at-root {
-    #{&}#{$specSelector}.#{$block+$element-separator+$element+$modifierCombo} {
-      @content;
-    }
-  }
-}
-
-@mixin meb($modifier: false, $element: $E, $block: $B) {
-  $selector: &;
-  $modifierCombo: '';
-
-  @if $modifier {
-    $modifierCombo: $modifier-separator + $modifier;
-  }
-
-  @at-root {
-    #{$selector} {
-      .#{$block+$element-separator+$element+$modifierCombo} {
-        @content;
-      }
-    }
+    $_BEM: $lastBEM !global;
   }
 }
 
