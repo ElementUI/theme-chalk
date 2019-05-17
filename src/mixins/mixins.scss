@@ -53,15 +53,15 @@
  -------------------------- */
 @mixin placeholder {
   &::-webkit-input-placeholder {
-    @content
+    @content;
   }
 
   &::-moz-placeholder {
-    @content
+    @content;
   }
 
   &:-ms-input-placeholder {
-    @content
+    @content;
   }
 }
 
@@ -140,7 +140,7 @@
 
   @at-root {
     #{&}#{$specSelector}.#{$block+$element-separator+$element+$modifierCombo} {
-      @content
+      @content;
     }
   }
 }
@@ -156,7 +156,7 @@
   @at-root {
     #{$selector} {
       .#{$block+$element-separator+$element+$modifierCombo} {
-        @content
+        @content;
       }
     }
   }
@@ -178,13 +178,12 @@
   $rule-name: '%shared-'+$name;
 
   @at-root #{$rule-name} {
-    @content
+    @content;
   }
 }
 
 @mixin pseudo($pseudo) {
   @at-root #{&}#{':#{$pseudo}'} {
-    @content
+    @content;
   }
 }
-

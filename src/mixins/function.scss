@@ -5,6 +5,7 @@
 @function selectorToString($selector) {
   $selector: inspect($selector);
   $selector: str-slice($selector, 2, -2);
+
   @return $selector;
 }
 
@@ -22,9 +23,9 @@
   $selector: selectorToString($selector);
 
   @if str-index($selector, '.' + $state-prefix) {
-    @return true
+    @return true;
   } @else {
-    @return false
+    @return false;
   }
 }
 
@@ -32,13 +33,12 @@
   $selector: selectorToString($selector);
 
   @if str-index($selector, ':') {
-    @return true
+    @return true;
   } @else {
-    @return false
+    @return false;
   }
 }
 
 @function hitAllSpecialNestRule($selector) {
-
   @return containsModifier($selector) or containWhenFlag($selector) or containPseudoClass($selector);
 }
