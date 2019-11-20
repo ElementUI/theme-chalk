@@ -6,7 +6,7 @@
 /// See [Combinators](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors#Combinators "CSS selectors")
 $_selector-combinators: ("+", "~", ">", "||");
 
-@function bem-extend($selectors, $extendee, $extender) {
+@function bem-extend($selectors, $extendees, $extender) {
   $returns: ();
 
   @if null == $selectors {
@@ -16,15 +16,13 @@ $_selector-combinators: ("+", "~", ">", "||");
   @each $selector in $selectors {
     $len: length($selector);
 
-    @if nth($selector, $len) == $extendee {
-      @if $len >= 2 {
-        @if index($_selector-combinators, nth($selector, $len - 1)) == null {
-          $returns: append($returns, set-nth($selector, $len, $extender), "comma");
-        } @else {
-          $returns: append($returns, append($selector, $extender), "comma");
-        }
-      } @else {
+    @if index($extendees, nth($selector, $len)) != null {
+      @if $len < 2 {
         $returns: append($returns, ($extender), "comma");
+      } @else if index($_selector-combinators, nth($selector, $len - 1)) == null {
+        $returns: append($returns, set-nth($selector, $len, $extender), "comma");
+      } @else {
+        $returns: append($returns, append($selector, $extender), "comma");
       }
     } @else {
       $returns: append($returns, append($selector, $extender), "comma");

@@ -83,42 +83,34 @@ $_BEM: (null, null, null);
 
 @mixin e($elements) {
   $block: nth($_BEM, 1);
+  $old-elements: nth($_BEM, 2);
 
   @if null == $block {
     @error "Base-level rules cannot contain an element mixin";
   } @else {
-    $selects: &;
-    $old-elems: nth($_BEM, 2);
-
-    @if (null != $old-elems) {
-      $selects: ();
-
-      @each $old-select in & {
-        @each $old-element in $old-elems {
-          $old-bem: ".#{$namespace}-#{$block}#{$element-separator}#{$old-element}";
-          $old-len: length($old-select);
-
-          @if nth($old-select, $old-len) == $old-bem {
-            $selects: append($selects, set-nth($old-select, $old-len, ".#{$namespace}-#{$block}"), "comma", );
-          } @else {
-            $selects: append($selects, $old-select, "comma", );
-          }
-        }
-      }
-    }
-
     $lastBEM: $_BEM;
     $_BEM: ($block, $elements, null) !global;
 
-    $parent: ".#{$namespace}-#{$block}";
+    $parents: ();
+
+    @if (null == $old-elements) {
+      $parents: append($parents, ".#{$namespace}-#{$block}");
+    } @else {
+      @each $element in $old-elements {
+        $parents: append($parents, ".#{$namespace}-#{$block}#{$element-separator}#{$element}");
+      }
+    }
+
     $current: ();
 
     @each $element in $elements {
-      $current: append(
-        $current,
-        bem-extend($selects, $parent, "#{$parent}#{$element-separator}#{$element}"),
-        "comma",
-      );
+      @each $parent in $parents {
+        $current: append(
+          $current,
+          bem-extend(&, $parent, ".#{$namespace}-#{$block}#{$element-separator}#{$element}"),
+          "comma",
+        );
+      }
     }
 
     @at-root {
@@ -133,42 +125,42 @@ $_BEM: (null, null, null);
 
 @mixin m($modifiers) {
   $block: nth($_BEM, 1);
+  $elements: nth($_BEM, 2);
+  $old-modifiers: nth($_BEM, 3);
 
   @if null == $block {
     @error "Base-level rules cannot contain a modifier mixin";
-  } @else if null != nth($_BEM, 3) {
+  } @else if null != $old-modifiers {
     @error "Modifier-level rules cannot contain another modifier mixin";
   } @else {
-    $elements: nth($_BEM, 2);
-
-    @if (null == $elements) {
-      $elements: (null);
-    }
-
     $lastBEM: $_BEM;
     $_BEM: ($block, $elements, $modifiers) !global;
 
-    @each $element in $elements {
-      $parent: ".#{$namespace}-#{$block}";
+    $parents: ();
 
-      @if (null != $element) {
-        $parent: "#{$parent}#{$element-separator}#{$element}";
+    @if (null == $elements) {
+      $parents: append($parents, ".#{$namespace}-#{$block}");
+    } @else {
+      @each $element in $elements {
+        $parents: append($parents, ".#{$namespace}-#{$block}#{$element-separator}#{$element}");
       }
+    }
 
-      $current: ();
+    $current: ();
 
-      @each $modifier in $modifiers {
+    @each $modifier in $modifiers {
+      @each $parent in $parents {
         $current: append(
           $current,
-          bem-extend(&, $parent, "#{$parent}#{$modifier-separator}#{$modifier}"),
+          bem-extend(&, $parents, "#{$parent}#{$modifier-separator}#{$modifier}"),
           "comma",
         );
       }
+    }
 
-      @at-root {
-        #{$current} {
-          @content;
-        }
+    @at-root {
+      #{$current} {
+        @content;
       }
     }
 
