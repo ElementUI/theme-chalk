@@ -75,7 +75,7 @@
     height: $--transfer-panel-body-height;
 
     @include when(with-footer) {
-      padding-bottom: $--transfer-panel-footer-height;
+      margin-bottom: $--transfer-panel-footer-height;
     }
   }
 
