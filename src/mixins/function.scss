@@ -2,43 +2,32 @@
 
 /* BEM support Func
  -------------------------- */
-@function selectorToString($selector) {
-  $selector: inspect($selector);
-  $selector: str-slice($selector, 2, -2);
-  @return $selector;
-}
 
-@function containsModifier($selector) {
-  $selector: selectorToString($selector);
+/// See [Combinators](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors#Combinators "CSS selectors")
+$_selector-combinators: ("+", "~", ">", "||");
 
-  @if str-index($selector, $modifier-separator) {
-    @return true;
-  } @else {
-    @return false;
+@function bem-extend($selectors, $extendees, $extender) {
+  $returns: ();
+
+  @if null == $selectors {
+    $selectors: selector-parse("");
   }
-}
 
-@function containWhenFlag($selector) {
-  $selector: selectorToString($selector);
+  @each $selector in $selectors {
+    $len: length($selector);
 
-  @if str-index($selector, '.' + $state-prefix) {
-    @return true
-  } @else {
-    @return false
+    @if index($extendees, nth($selector, $len)) != null {
+      @if $len < 2 {
+        $returns: append($returns, ($extender), "comma");
+      } @else if index($_selector-combinators, nth($selector, $len - 1)) == null {
+        $returns: append($returns, set-nth($selector, $len, $extender), "comma");
+      } @else {
+        $returns: append($returns, append($selector, $extender), "comma");
+      }
+    } @else {
+      $returns: append($returns, append($selector, $extender), "comma");
+    }
   }
-}
 
-@function containPseudoClass($selector) {
-  $selector: selectorToString($selector);
-
-  @if str-index($selector, ':') {
-    @return true
-  } @else {
-    @return false
-  }
-}
-
-@function hitAllSpecialNestRule($selector) {
-
-  @return containsModifier($selector) or containWhenFlag($selector) or containPseudoClass($selector);
+  @return $returns;
 }
