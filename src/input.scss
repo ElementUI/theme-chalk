@@ -135,6 +135,7 @@
     &:focus {
       outline: none;
       border-color: $--input-focus-border;
+      background-color: $--input-focus-fill;
     }
   }
 
